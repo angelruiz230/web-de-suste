@@ -4,6 +4,24 @@
     <title>suste pagina</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+<style>
+ .upload-box {
+            width: 400px;
+            height: 300px;
+            border: 2px dashed #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 10px;
+            margin: 20px auto;
+        }
+
+        .upload-box:hover {
+            border-color: #333;
+        }
+        </style>
+        
 <body>
 
     <h1>reportes guadalajara</h1>
@@ -11,7 +29,9 @@
     <h2>Nuevo Reporte</h2>
     <input type="text" id="descripcion" placeholder="Describe el problema">
     <input type="text" id="ubicacion" placeholder="Ubicacion">
-    <input type="file" id="imagen" placeholder="subir imagen">
+    <label class="upload-box">
+    <input type="file" id="imagen" accept="image/*">
+</label>
     <button onclick="agregarReporte()">Enviar</button>
 
     <h2>Reportes</h2>
