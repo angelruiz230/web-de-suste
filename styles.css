@@ -116,6 +116,47 @@ header {
     background-color: #219150;
 }
 
+@media (max-width: 480px) {
+    header {
+        padding: 15px;
+    }
+
+    .logo {
+        width: 45px;
+        height: 45px;
+    }
+
+    .header-text h1 {
+        font-size: 1.4rem;
+    }
+
+    .header-text p {
+        display: none;
+    }
+
+    .menu-toggle {
+        font-size: 1.4rem;
+        padding: 10px;
+        width: 44px;
+        height: 44px;
+    }
+
+    .header-menu {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        padding: 15px;
+        margin-top: 10px;
+        border-radius: 0 0 12px 12px;
+    }
+
+    .btn-login-header, .btn-unete-header {
+        padding: 16px 20px;
+        font-size: 1.1rem;
+        width: 100%;
+    }
+}
+
 /* --- Contenedor Principal --- */
 .container {
     padding: 15px;
