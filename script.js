@@ -1,7 +1,7 @@
 function actualizarNombreArchivo() {
     const input = document.getElementById('imagen');
     const label = document.getElementById('label-text');
-    if (input.files.length > 0) label.innerText = "✅ Foto cargada";
+    if (input.files.length > 0) label.innerText = "Foto cargada";
 }
 
 function agregarReporte() {
@@ -52,7 +52,11 @@ function guardarReporte(reporte) {
     document.getElementById("imagen").value = "";
     document.getElementById('label-text').innerText = "Añadir foto";
 
-    mostrarReportes();
+mostrarReportes();
+
+function toggleMenu() {
+    document.getElementById("headerMenu").classList.toggle("active");
+}
 }
 
 function eliminarReporte(id) {

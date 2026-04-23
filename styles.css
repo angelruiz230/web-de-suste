@@ -94,6 +94,25 @@ header {
     background-color: #219150;
 }
 
+.btn-unete-header:hover {
+    background-color: #219150;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.header-menu {
+    display: flex;
+    gap: 10px;
+}
+
 @media (max-width: 480px) {
     header {
         padding: 15px 10px;
@@ -117,14 +136,25 @@ header {
         font-size: 0.7rem;
     }
 
-    .header-buttons {
+    .menu-toggle {
+        display: block;
+    }
+
+    .header-menu {
+        display: none;
         width: 100%;
-        justify-content: center;
+        flex-direction: column;
+        padding-top: 15px;
+    }
+
+    .header-menu.active {
+        display: flex;
     }
 
     .btn-login-header, .btn-unete-header {
-        padding: 8px 10px;
-        font-size: 0.75rem;
+        padding: 12px;
+        font-size: 0.9rem;
+        width: 100%;
     }
 }
 
