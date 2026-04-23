@@ -9,7 +9,6 @@ function agregarReporte() {
     let ubicacion = document.getElementById("ubicacion").value;
     let archivo = document.getElementById("imagen").files[0];
     
-    // Obtener fecha y hora actual
     let ahora = new Date();
     let fechaHora = ahora.toLocaleString('es-MX', { 
         day: '2-digit', month: '2-digit', year: 'numeric', 
@@ -23,7 +22,7 @@ function agregarReporte() {
 
     const procesarReporte = (imgData) => {
         let reporte = {
-            id: Date.now(), // ID único para poder eliminarlo después
+            id: Date.now(),
             descripcion,
             ubicacion,
             fecha: fechaHora,
@@ -46,17 +45,12 @@ function guardarReporte(reporte) {
     datos.unshift(reporte);
     localStorage.setItem("reportes", JSON.stringify(datos));
     
-    // Resetear formulario
     document.getElementById("descripcion").value = "";
     document.getElementById("ubicacion").value = "";
     document.getElementById("imagen").value = "";
     document.getElementById('label-text').innerText = "Añadir foto";
 
-mostrarReportes();
-
-function toggleMenu() {
-    document.getElementById("headerMenu").classList.toggle("active");
-}
+    mostrarReportes();
 }
 
 function eliminarReporte(id) {
@@ -64,7 +58,35 @@ function eliminarReporte(id) {
         let datos = JSON.parse(localStorage.getItem("reportes")) || [];
         datos = datos.filter(r => r.id !== id);
         localStorage.setItem("reportes", JSON.stringify(datos));
-mostrarReportes();
+        mostrarReportes();
+    }
+}
+
+function mostrarReportes() {
+    let lista = document.getElementById("listaReportes");
+    lista.innerHTML = "";
+    let datos = JSON.parse(localStorage.getItem("reportes")) || [];
+
+    datos.forEach(r => {
+        let card = document.createElement("div");
+        card.className = "reporte-card";
+
+        card.innerHTML = `
+            <button class="btn-eliminar" onclick="eliminarReporte(${r.id})">×</button>
+            <div class="reporte-info">
+                <p><strong>${r.descripcion}</strong></p>
+                <p class="txt-ubicacion">${r.ubicacion}</p>
+                <span class="fecha-txt">${r.fecha}</span>
+            </div>
+            ${r.imagen ? `<img src="${r.imagen}" class="reporte-img">` : ''}
+        `;
+        lista.appendChild(card);
+    });
+}
+
+function toggleMenu() {
+    document.getElementById("headerMenu").classList.toggle("active");
+}
 
 function iniciarSesion(e) {
     e.preventDefault();
@@ -91,30 +113,5 @@ function registrarUsuario(e) {
     alert("¡Te has unido a nuestra causa!");
     window.location.href = "index.html";
 }
-    }
-}
-
-function mostrarReportes() {
-    let lista = document.getElementById("listaReportes");
-    lista.innerHTML = "";
-    let datos = JSON.parse(localStorage.getItem("reportes")) || [];
-
-    datos.forEach(r => {
-        let card = document.createElement("div");
-        card.className = "reporte-card";
-
-        card.innerHTML = `
-            <button class="btn-eliminar" onclick="eliminarReporte(${r.id})">×</button>
-            <div class="reporte-info">
-                <p><strong>${r.descripcion}</strong></p>
-                <p class="txt-ubicacion">${r.ubicacion}</p>
-                <span class="fecha-txt">${r.fecha}</span>
-            </div>
-            ${r.imagen ? `<img src="${r.imagen}" class="reporte-img">` : ''}
-        `;
-        lista.appendChild(card);
-    });
-}
 
 mostrarReportes();
-

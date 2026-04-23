@@ -52,16 +52,19 @@ header {
     opacity: 0.8;
 }
 
-.header-buttons {
-    display: flex;
-    gap: 10px;
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px 10px;
 }
 
-.logo {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    border-radius: 8px;
+.header-menu {
+    display: flex;
+    gap: 10px;
 }
 
 .btn-login-header, .btn-unete-header {
@@ -92,25 +95,6 @@ header {
 
 .btn-unete-header:hover {
     background-color: #219150;
-}
-
-.btn-unete-header:hover {
-    background-color: #219150;
-}
-
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 5px 10px;
-}
-
-.header-menu {
-    display: flex;
-    gap: 10px;
 }
 
 @media (max-width: 480px) {
@@ -158,45 +142,10 @@ header {
     }
 }
 
-    .logo {
-        width: 60px;
-        height: 60px;
-    }
-
-.header-text h1 {
-    font-size: 1.8rem;
-    letter-spacing: 1px;
-    display: inline;
-}
-
-.header-text p {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    display: inline;
-    margin-left: 8px;
-}
-
-    .btn-login-header, .btn-unete-header {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-        flex: 1;
-        text-align: center;
-    }
-
-header h1 {
-    font-size: 1.8rem;
-    letter-spacing: 1px;
-}
-
-header p {
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
 /* --- Contenedor Principal --- */
 .container {
     padding: 15px;
-    max-width: 500px; /* Ideal para celulares y lectura cómoda en PC */
+    max-width: 500px;
     margin: 0 auto;
 }
 
@@ -229,7 +178,7 @@ input[type="text"] {
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    font-size: 16px; /* Evita zoom automático en iOS */
+    font-size: 16px;
     background-color: #f9f9f9;
 }
 
@@ -261,8 +210,8 @@ input[type="text"]:focus {
     border-color: #3498db;
 }
 
-#imagen {
-    display: none; /* Ocultamos el input feo por defecto */
+input[type="file"] {
+    display: none;
 }
 
 /* Botón enviar */
@@ -329,7 +278,6 @@ input[type="text"]:focus {
     margin-top: 10px;
 }
 
-/* Imagen dentro del reporte */
 .reporte-img {
     width: 100%;
     height: auto;
@@ -365,7 +313,6 @@ input[type="text"]:focus {
     background: #c0392b;
 }
 
-/* Separador */
 hr {
     border: none;
     height: 1px;
