@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UrbeGDL</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
 
@@ -25,7 +27,11 @@
         <section class="formulario">
             <h2>Nuevo Reporte</h2>
             <input type="text" id="descripcion" placeholder="¿Qué problema hay?">
-            <input type="text" id="ubicacion" placeholder="Ubicación (Colonia o calle)">
+            
+            <label>Selecciona la ubicación en el mapa:</label>
+            <div id="mapa"></div>
+            <input type="hidden" id="ubicacion" value="">
+            <p id="ubicacion-texto" class="ubicacion-preview"></p>
             
             <label class="upload-box" for="imagen">
                 <span id="label-text">Añadir foto</span>

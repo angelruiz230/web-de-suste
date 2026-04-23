@@ -4,6 +4,42 @@ function actualizarNombreArchivo() {
     if (input.files.length > 0) label.innerText = "Foto cargada";
 }
 
+// Inicializar mapa - Guadalajara como centro por defecto
+const defaultLat = 20.6736;
+const defaultLng = -103.3438;
+
+const map = L.map('mapa').setView([defaultLat, defaultLng], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+let marker = null;
+let ubicacionCoords = null;
+
+map.on('click', function(e) {
+    ubicacionCoords = e.latlng;
+    
+    if (marker) {
+        marker.setLatLng(e.latlng);
+    } else {
+        marker = L.marker(e.latlng).addTo(map);
+    }
+    
+    // Obtener dirección usando reverse geocoding
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+        .then(response => response.json())
+        .then(data => {
+            const direccion = data.display_name || `Coords: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+            document.getElementById('ubicacion').value = direccion;
+            document.getElementById('ubicacion-texto').innerText = direccion;
+        })
+        .catch(() => {
+            document.getElementById('ubicacion').value = `Coords: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+            document.getElementById('ubicacion-texto').innerText = `Coords: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+        });
+});
+
 function agregarReporte() {
     let descripcion = document.getElementById("descripcion").value;
     let ubicacion = document.getElementById("ubicacion").value;
@@ -15,8 +51,13 @@ function agregarReporte() {
         hour: '2-digit', minute: '2-digit' 
     });
 
-    if (!descripcion || !ubicacion) {
-        alert("Rellena los campos obligatorios.");
+    if (!descripcion) {
+        alert("Describe el problema.");
+        return;
+    }
+
+    if (!ubicacion) {
+        alert("Selecciona una ubicación en el mapa.");
         return;
     }
 

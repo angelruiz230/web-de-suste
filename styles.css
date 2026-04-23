@@ -155,6 +155,25 @@ header {
         font-size: 1.1rem;
         width: 100%;
     }
+
+    .formulario {
+        padding: 15px;
+    }
+
+    .formulario label {
+        font-size: 0.9rem;
+    }
+
+    #mapa {
+        height: 220px;
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
+
+    .ubicacion-preview {
+        font-size: 0.8rem;
+        padding: 10px;
+    }
 }
 
 /* --- Contenedor Principal --- */
@@ -185,6 +204,48 @@ h2 {
     font-size: 1.1rem;
     border-bottom: 2px solid #f0f2f5;
     padding-bottom: 10px;
+}
+
+.formulario label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #34495e;
+    font-size: 0.95rem;
+}
+
+#mapa {
+    height: 250px;
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    z-index: 1;
+}
+
+.ubicacion-preview {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-top: 5px;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    word-break: break-word;
+}
+
+@media (max-width: 480px) {
+    .formulario {
+        padding: 15px;
+    }
+
+    #mapa {
+        height: 200px;
+        border-radius: 10px;
+    }
+
+    .ubicacion-preview {
+        font-size: 0.8rem;
+        padding: 10px;
+    }
 }
 
 input[type="text"] {
