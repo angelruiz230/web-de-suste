@@ -50,7 +50,7 @@ function guardarReporte(reporte) {
     document.getElementById("descripcion").value = "";
     document.getElementById("ubicacion").value = "";
     document.getElementById("imagen").value = "";
-    document.getElementById('label-text').innerText = "📸 Añadir foto";
+    document.getElementById('label-text').innerText = "Añadir foto";
 
     mostrarReportes();
 }
@@ -72,6 +72,21 @@ function iniciarSesion(e) {
     
     window.location.href = "index.html";
 }
+
+function registrarUsuario(e) {
+    e.preventDefault();
+    let nombre = document.getElementById("nombre").value;
+    let nacimiento = document.getElementById("nacimiento").value;
+    let curp = document.getElementById("curp").value;
+    let email = document.getElementById("email").value;
+    let telefono = document.getElementById("telefono").value;
+    
+    let voluntario = { nombre, nacimiento, curp, email, telefono };
+    localStorage.setItem("voluntario", JSON.stringify(voluntario));
+    
+    alert("¡Te has unido a nuestra causa!");
+    window.location.href = "index.html";
+}
     }
 }
 
@@ -88,8 +103,8 @@ function mostrarReportes() {
             <button class="btn-eliminar" onclick="eliminarReporte(${r.id})">×</button>
             <div class="reporte-info">
                 <p><strong>${r.descripcion}</strong></p>
-                <p class="txt-ubicacion">📍 ${r.ubicacion}</p>
-                <span class="fecha-txt">🕒 ${r.fecha}</span>
+                <p class="txt-ubicacion">${r.ubicacion}</p>
+                <span class="fecha-txt">${r.fecha}</span>
             </div>
             ${r.imagen ? `<img src="${r.imagen}" class="reporte-img">` : ''}
         `;

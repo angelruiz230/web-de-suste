@@ -9,12 +9,15 @@
 <body>
 
     <header>
-        <img src="imagenes/logo.png" alt="Logo" class="logo">
         <div class="header-text">
+            <img src="imagenes/logo.png" alt="Logo" class="logo">
             <h1>UrbeGDL</h1>
             <p>Reportes Ciudadanos</p>
         </div>
-        <a href="login.html" class="btn-login-header">Iniciar Sesión</a>
+        <div class="header-buttons">
+            <a href="login.html" class="btn-login-header">Iniciar Sesión</a>
+            <a href="unete.html" class="btn-unete-header">Únete a nuestra causa</a>
+        </div>
     </header>
 
     <main class="container">
@@ -24,7 +27,7 @@
             <input type="text" id="ubicacion" placeholder="Ubicación (Colonia o calle)">
             
             <label class="upload-box" for="imagen">
-                <span id="label-text">📸 Añadir foto</span>
+                <span id="label-text">Añadir foto</span>
                 <input type="file" id="imagen" accept="image/*" onchange="actualizarNombreArchivo()">
             </label>
 

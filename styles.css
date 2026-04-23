@@ -10,7 +10,7 @@ body {
     background-color: #f0f2f5;
     color: #1c1e21;
     line-height: 1.6;
-    padding-bottom: 50px; /* Espacio al final para que no quede pegado al borde */
+    padding-bottom: 50px;
 }
 
 /* --- Encabezado --- */
@@ -30,6 +30,9 @@ header {
 .header-text {
     flex: 1;
     min-width: 150px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .logo {
@@ -39,20 +42,116 @@ header {
     border-radius: 8px;
 }
 
-.btn-login-header {
-    background-color: #3498db;
-    color: white;
-    padding: 10px 20px;
+.header-text h1 {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
+
+.header-text p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.btn-login-header, .btn-unete-header {
+    padding: 10px 15px;
     border-radius: 8px;
     text-decoration: none;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1rem;
     transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-login-header {
+    background-color: #3498db;
+    color: white;
 }
 
 .btn-login-header:hover {
     background-color: #2980b9;
 }
+
+.btn-unete-header {
+    background-color: #27ae60;
+    color: white;
+}
+
+.btn-unete-header:hover {
+    background-color: #219150;
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 15px 10px;
+        gap: 10px;
+    }
+
+    .logo {
+        width: 50px;
+        height: 50px;
+    }
+
+    .header-text {
+        gap: 5px;
+    }
+
+    .header-text h1 {
+        font-size: 1.2rem;
+    }
+
+    .header-text p {
+        font-size: 0.7rem;
+    }
+
+    .header-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .btn-login-header, .btn-unete-header {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+    }
+}
+
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+
+.header-text h1 {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+    display: inline;
+}
+
+.header-text p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    display: inline;
+    margin-left: 8px;
+}
+
+    .btn-login-header, .btn-unete-header {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        flex: 1;
+        text-align: center;
+    }
 
 header h1 {
     font-size: 1.8rem;
