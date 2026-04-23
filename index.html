@@ -3,33 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reportes Guadalajara</title>
+    <title>UrbeGDL</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
     <header>
-        <h1>Reportes Guadalajara</h1>
+        <h1>UrbeGDL</h1>
+        <p>Reportes Ciudadanos</p>
     </header>
 
     <main class="container">
         <section class="formulario">
             <h2>Nuevo Reporte</h2>
             <input type="text" id="descripcion" placeholder="¿Qué problema hay?">
-            <input type="text" id="ubicacion" placeholder="Ubicación (Colonia, calle...)">
+            <input type="text" id="ubicacion" placeholder="Ubicación (Colonia o calle)">
             
             <label class="upload-box" for="imagen">
-                <span id="label-text">📸 Toca para subir foto</span>
+                <span id="label-text">📸 Añadir foto</span>
                 <input type="file" id="imagen" accept="image/*" onchange="actualizarNombreArchivo()">
             </label>
 
             <button class="btn-enviar" onclick="agregarReporte()">Enviar Reporte</button>
         </section>
 
-        <hr>
-
         <section>
-            <h2>Reportes Recientes</h2>
+            <h2>Historial de Reportes</h2>
             <div id="listaReportes" class="grid-reportes"></div>
         </section>
     </main>
