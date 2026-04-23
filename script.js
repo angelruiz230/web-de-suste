@@ -60,7 +60,18 @@ function eliminarReporte(id) {
         let datos = JSON.parse(localStorage.getItem("reportes")) || [];
         datos = datos.filter(r => r.id !== id);
         localStorage.setItem("reportes", JSON.stringify(datos));
-        mostrarReportes();
+mostrarReportes();
+
+function iniciarSesion(e) {
+    e.preventDefault();
+    let email = document.getElementById("email").value;
+    let telefono = document.getElementById("telefono").value;
+    
+    let usuario = { email, telefono };
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+    
+    window.location.href = "index.html";
+}
     }
 }
 
@@ -87,5 +98,4 @@ function mostrarReportes() {
 }
 
 mostrarReportes();
-
 
