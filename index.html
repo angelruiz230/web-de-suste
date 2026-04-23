@@ -1,42 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>suste pagina</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes Guadalajara</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<style>
- .upload-box {
-            width: 400px;
-            height: 300px;
-            border: 2px dashed #aaa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border-radius: 10px;
-            margin: 20px auto;
-        }
-
-        .upload-box:hover {
-            border-color: #333;
-        }
-        </style>
-        
 <body>
 
-    <h1>reportes guadalajara</h1>
+    <header>
+        <h1>Reportes Guadalajara</h1>
+    </header>
 
-    <h2>Nuevo Reporte</h2>
-    <input type="text" id="descripcion" placeholder="Describe el problema">
-    <input type="text" id="ubicacion" placeholder="Ubicacion">
-    <label class="upload-box">
-    <input type="file" id="imagen" accept="image/*">
-</label>
-    <button onclick="agregarReporte()">Enviar</button>
+    <main class="container">
+        <section class="formulario">
+            <h2>Nuevo Reporte</h2>
+            <input type="text" id="descripcion" placeholder="¿Qué problema hay?">
+            <input type="text" id="ubicacion" placeholder="Ubicación (Colonia, calle...)">
+            
+            <label class="upload-box" for="imagen">
+                <span id="label-text">📸 Toca para subir foto</span>
+                <input type="file" id="imagen" accept="image/*" onchange="actualizarNombreArchivo()">
+            </label>
 
-    <h2>Reportes</h2>
-    <ul id="listaReportes"></ul>
+            <button class="btn-enviar" onclick="agregarReporte()">Enviar Reporte</button>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>Reportes Recientes</h2>
+            <div id="listaReportes" class="grid-reportes"></div>
+        </section>
+    </main>
+
     <script src="script.js"></script>
-
 </body>
 </html>
