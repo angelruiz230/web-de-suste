@@ -1,3 +1,4 @@
+/* --- Reseteo y Base --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -9,112 +10,204 @@ body {
     background-color: #f0f2f5;
     color: #1c1e21;
     line-height: 1.6;
+    padding-bottom: 50px; /* Espacio al final para que no quede pegado al borde */
 }
 
+/* --- Encabezado --- */
 header {
     background-color: #2c3e50;
     color: white;
-    padding: 20px;
+    padding: 30px 20px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
+header h1 {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
+
+header p {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* --- Contenedor Principal --- */
 .container {
     padding: 15px;
-    max-width: 600px;
+    max-width: 500px; /* Ideal para celulares y lectura cómoda en PC */
     margin: 0 auto;
 }
 
 h2 {
-    margin: 20px 0 15px;
-    font-size: 1.2rem;
-    color: #444;
+    margin: 25px 0 15px;
+    font-size: 1.3rem;
+    color: #34495e;
+    text-align: left;
 }
 
-/* Formulario */
+/* --- Formulario de Reporte --- */
 .formulario {
     background: white;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.formulario h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #f0f2f5;
+    padding-bottom: 10px;
 }
 
 input[type="text"] {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px; /* Evita que el iPhone haga zoom automático */
+    border-radius: 10px;
+    font-size: 16px; /* Evita zoom automático en iOS */
+    background-color: #f9f9f9;
 }
 
+input[type="text"]:focus {
+    outline: none;
+    border-color: #3498db;
+    background-color: #fff;
+}
+
+/* Caja de carga de imagen */
 .upload-box {
     width: 100%;
-    height: 100px;
-    border: 2px dashed #3498db;
+    height: 80px;
+    border: 2px dashed #bdc3c7;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    background-color: #f7fbff;
-    margin-bottom: 15px;
-    color: #3498db;
-    transition: 0.3s;
+    background-color: #fafafa;
+    margin-bottom: 20px;
+    color: #7f8c8d;
+    transition: all 0.3s ease;
 }
 
 .upload-box:active {
-    background-color: #ebf5ff;
+    background-color: #ecf0f1;
     transform: scale(0.98);
+    border-color: #3498db;
 }
 
 #imagen {
-    display: none;
+    display: none; /* Ocultamos el input feo por defecto */
 }
 
+/* Botón enviar */
 .btn-enviar {
     width: 100%;
-    padding: 14px;
+    padding: 15px;
     background-color: #27ae60;
     color: white;
     border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 10px;
+    font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
+    transition: background 0.3s;
 }
 
-/* Lista de Reportes */
+.btn-enviar:active {
+    background-color: #219150;
+}
+
+/* --- Tarjetas de Reportes --- */
 .grid-reportes {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 
 .reporte-card {
+    position: relative;
     background: white;
-    border-radius: 12px;
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .reporte-info {
     padding: 15px;
 }
 
-.reporte-info p {
+.reporte-info p strong {
+    display: block;
+    font-size: 1.1rem;
+    color: #2c3e50;
     margin-bottom: 5px;
 }
 
+.txt-ubicacion {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    display: flex;
+    align-items: center;
+}
+
+.fecha-txt {
+    display: block;
+    font-size: 0.75rem;
+    color: #bdc3c7;
+    margin-top: 10px;
+}
+
+/* Imagen dentro del reporte */
 .reporte-img {
     width: 100%;
     height: auto;
+    max-height: 350px;
     display: block;
-    max-height: 300px;
     object-fit: cover;
+    border-top: 1px solid #eee;
 }
 
-.txt-ubicacion {
-    font-size: 0.85rem;
-    color: #777;
+/* Botón eliminar */
+.btn-eliminar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(231, 76, 60, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: transform 0.2s;
+}
+
+.btn-eliminar:active {
+    transform: scale(0.9);
+    background: #c0392b;
+}
+
+/* Separador */
+hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
+    margin: 30px 0;
 }
