@@ -31,47 +31,11 @@ header h1 { font-size: 1.4rem; color: #e60023; font-weight: 800; }
 }
 .header-center input:focus { border-color: #e60023; background: white; outline: none; }
 
-.header-right { display: flex; gap: 10px; }
-.menu-toggle {
-    display: none;
-    background: #f0f0f0;
-    border: none;
-    font-size: 1.2rem;
-    padding: 8px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .menu-toggle {
-        display: block;
-    }
-    
-    .header-right {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        flex-direction: column;
-        padding: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        gap: 8px;
-    }
-    
-    .header-right.active {
-        display: flex;
-    }
-    
-    .btn-login, .btn-register {
-        text-align: center;
-    }
-}
 .btn-login { background: #e60023; color: white; padding: 10px 20px; border-radius: 24px; text-decoration: none; font-weight: 600; font-size: 14px; }
 .btn-register { background: #f0f0f0; color: #333; padding: 10px 20px; border-radius: 24px; text-decoration: none; font-weight: 600; font-size: 14px; }
 .btn-login:hover { background: #ad081b; }
 .btn-register:hover { background: #e0e0e0; }
+.menu-toggle { display: none; }
 
 /* Main Container */
 .container {
@@ -202,18 +166,11 @@ header h1 { font-size: 1.4rem; color: #e60023; font-weight: 800; }
 .reporte-card:hover .btn-eliminar { opacity: 1; }
 .btn-eliminar:hover { background: #e60023; }
 
-/* Mobile / Responsive */
+/* Mobile / Responsive - Similar a PC */
 @media (max-width: 768px) {
-    /* Header responsive */
+    /* Header - más pequeño pero igual estilo */
     header {
         padding: 10px 14px;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
-    
-    .header-left {
-        flex: 1;
-        min-width: auto;
     }
     
     .header-left h1 {
@@ -223,66 +180,71 @@ header h1 { font-size: 1.4rem; color: #e60023; font-weight: 800; }
     .logo {
         width: 32px;
         height: 32px;
+    }
+    
+    /* Ocultar búsqueda en móviles pequeños */
+    .header-center {
+        display: none;
+    }
+    
+    .menu-toggle {
+        display: block;
+        background: #f0f0f0;
+        border: none;
+        font-size: 1.2rem;
+        padding: 8px 10px;
         border-radius: 8px;
     }
     
-    .header-center {
-        display: none !important;
-    }
-    
     .header-right {
-        display: flex;
-        gap: 6px;
-    }
-    
-    .btn-login, .btn-register {
-        padding: 8px 12px;
-        font-size: 12px;
-    }
-    
-    /* Container full width */
-    .container {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
         flex-direction: column;
         padding: 12px;
-        gap: 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        gap: 8px;
+    }
+    
+    .header-right.active {
+        display: flex;
+    }
+    
+    /* Mantener layout side-by-side en tablets */
+    .container {
+        padding: 12px;
+        gap: 12px;
+        flex-direction: row;
     }
     
     .sidebar {
-        width: 100%;
-        order: 2;
+        width: 280px;
+        flex-shrink: 0;
     }
     
     .reports-section {
-        order: 1;
-        width: 100%;
+        flex: 1;
     }
     
-    /* Info box mobile */
+    /* Widgets equally styled but slightly smaller */
     .info-box, .form-box {
         padding: 14px;
         border-radius: 16px;
     }
     
-    .info-box h2, .form-box h2 {
-        font-size: 1rem;
-    }
-    
-    /* Form mobile */
     #mapa {
-        height: 160px;
+        height: 150px;
     }
     
-    /* Reports grid - 2 columns on tablet, 1 on mobile */
+    /* Grid - mantener 2 columnas en tablet */
     .grid-reportes {
         column-count: 2;
         column-gap: 10px;
     }
     
-    .reports-section h2 {
-        font-size: 1rem;
-    }
-    
-    /* Cards */
     .reporte-card {
         margin-bottom: 10px;
         border-radius: 12px;
@@ -291,66 +253,82 @@ header h1 { font-size: 1.4rem; color: #e60023; font-weight: 800; }
     .reporte-info {
         padding: 10px;
     }
-    
-    .descripcion-texto {
-        font-size: 0.85rem;
-    }
-    
-    .txt-ubicacion {
-        font-size: 0.75rem;
-    }
-    
-    /* Show delete button on mobile by default */
-    .btn-eliminar {
-        opacity: 0.7;
-        width: 28px;
-        height: 28px;
-        font-size: 1rem;
-    }
 }
 
-@media (max-width: 480px) {
-    header {
-        padding: 8px 10px;
-    }
-    
-    .header-left h1 {
-        font-size: 1rem;
-    }
-    
-    .logo {
-        width: 28px;
-        height: 28px;
-    }
-    
+@media (max-width: 600px) {
+    /* Container side-by-side */
     .container {
-        padding: 10px;
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .sidebar {
+        width: 260px;
+        min-width: 260px;
+    }
+    
+    .reports-section {
+        min-width: 0;
     }
     
     .grid-reportes {
-        column-count: 1;
+        column-count: 2;
     }
     
-    .info-box h3 {
-        font-size: 0.9rem;
-        margin-top: 12px;
+    .info-box, .form-box {
+        padding: 12px;
     }
     
-    .info-box p, .form-box label {
-        font-size: 0.85rem;
+    #mapa {
+        height: 140px;
     }
     
     .form-box input[type="text"] {
         padding: 10px 12px;
-        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Mantener layout side-by-side incluso en cel pequeño */
+    .container {
+        flex-direction: row;
+        padding: 8px;
+        gap: 8px;
     }
     
-    .btn-submit {
-        padding: 12px;
-        font-size: 0.95rem;
+    .sidebar {
+        width: 240px;
+        min-width: 240px;
     }
     
-    #mapa {
-        height: 150px;
+    .reports-section {
+        min-width: 0;
+    }
+    
+    /* Grid 2 columnas */
+    .grid-reportes {
+        column-count: 2;
+    }
+    
+    .reporte-card {
+        margin-bottom: 8px;
+        border-radius: 10px;
+    }
+    
+    .reporte-info {
+        padding: 8px;
+    }
+    
+    .descripcion-texto {
+        font-size: 0.8rem;
+    }
+    
+    .txt-ubicacion {
+        font-size: 0.7rem;
+    }
+    
+    /* Botón eliminar más visible */
+    .btn-eliminar {
+        opacity: 0.8;
     }
 }

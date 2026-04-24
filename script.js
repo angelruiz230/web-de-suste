@@ -11,108 +11,241 @@ window.onload = function() {
 function initMap() {
     // Check Leaflet
     if (typeof L === 'undefined') {
-        console.error('Leaflet no carregat!');
-        return;
+        console.log('Leaflet NO está cargado!');
+        return false;
     }
     
-    const mapDiv = document.getElementById('mapa');
-    if (!mapDiv) return;
+    if (window.mapaInicializado) {
+        return true;
+    }
     
-    // Create map - Guadalajara
-    map = L.map('mapa', {
-        center: [20.6736, -103.3438],
-        zoom: 13,
-        zoomControl: true
-    });
-    
-    // Add tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap',
-        maxZoom: 18
-    }).addTo(map);
-    
-    console.log('Mapa ready!');
-    
-    // Click handler
-    map.on('click', function(e) {
-        if (marker) marker.setLatLng(e.latlng);
-        else marker = L.marker(e.latlng).addTo(map);
+    try {
+        window.mapaInicializado = true;
         
-        // Get address
+        // Guadalajara coordinates
+        const guadalajara = [20.6736, -103.3438];
+        
+        // Create map
+        window.mapa = L.map('mapa', {
+            center: guadalajara,
+            zoom: 13,
+            zoomControl: true,
+            attributionControl: false
+        });
+        
+        // Add tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(window.mapa);
+        
+        window.marker = null;
+        
+        console.log('Mapa creado exitosamente!');
+        return true;
+        
+    } catch(e) {
+        console.error('Error creando mapa:', e);
+        window.mapaInicializado = false;
+        return false;
+    }
+}
+    
+    window.mapa.on('click', function(e) {
+        if (window.marker) {
+            window.marker.setLatLng(e.latlng);
+        } else {
+            window.marker = L.marker(e.latlng).addTo(window.mapa);
+        }
+        
         fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
-            .then(res => res.json())
+            .then(response => response.json())
             .then(data => {
-                const addr = data.display_name || `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
-                document.getElementById('ubicacion').value = addr;
-                document.getElementById('ubicacion-texto').textContent = addr;
+                const direccion = data.display_name || `Coords: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+                document.getElementById('ubicacion').value = direccion;
+                document.getElementById('ubicacion-texto').innerText = direccion;
             })
             .catch(() => {
-                const c = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
-                document.getElementById('ubicacion').value = c;
-                document.getElementById('ubicacion-texto').textContent = c;
+                const coords = `Coords: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+                document.getElementById('ubicacion').value = coords;
+                document.getElementById('ubicacion-texto').innerText = coords;
             });
     });
+
+
+// ======== LÍMITE DE REPORTES ========
+const MAX_REPORTES_DIA = 3;
+
+function verificarLimiteReportes() {
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    if (!usuario) return;
+    
+    const keyReportes = 'reportes_' + usuario.email;
+    const reportesHoy = JSON.parse(localStorage.getItem(keyReportes)) || [];
+    
+    const hoy = new Date().toDateString();
+    const reportesDeHoy = reportesHoy.filter(r => new Date(r.fecha).toDateString() === hoy);
+    const restantes = MAX_REPORTES_DIA - reportesDeHoy.length;
+    
+    const msg = document.getElementById('limite-msg');
+    const btn = document.getElementById('btn-enviar');
+    
+    if (!msg || !btn) return;
+    
+    if (restantes > 0) {
+        msg.className = 'limite-msg available';
+        msg.textContent = `📊 Te quedan ${restantes} reporte${restantes !== 1 ? 's' : ''} de hoy`;
+        btn.disabled = false;
+    } else {
+        msg.className = 'limite-msg warning';
+        msg.textContent = '⚠️ Has alcanzado el límite de reportes hoy';
+        btn.disabled = true;
+    }
 }
 
-// ======== ACTUALIZAR NOMBRE ARCHIVO ========
-function actualizarNombreArchivo() {
-    const input = document.getElementById('imagen');
-    const label = document.getElementById('label-text');
-    if (input.files[0]) label.textContent = "✓ Foto carregada";
+function contarReporteCreado() {
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    if (!usuario) return;
+    
+    const keyReportes = 'reportes_' + usuario.email;
+    let reportes = JSON.parse(localStorage.getItem(keyReportes)) || [];
+    reportes.push({ fecha: new Date().toISOString() });
+    localStorage.setItem(keyReportes, JSON.stringify(reportes));
+    verificarLimiteReportes();
+}
+
+// ======== CERRAR SESIÓN ========
+function cerrarSesion() {
+    localStorage.removeItem('usuario');
+    window.location.href = 'index.html';
 }
 
 // ======== AGREGAR REPORTE ========
 function agregarReporte() {
-    const desc = document.getElementById('descripcion').value.trim();
-    const ubic = document.getElementById('ubicacion').value;
-    const archivo = document.getElementById('imagen').files[0];
+    const descripcion = document.getElementById("descripcion").value.trim();
+    const ubicacion = document.getElementById("ubicacion").value;
+    const archivo = document.getElementById("imagen").files[0];
     
-    if (desc.length < 10) {
-        alert('Descriu el problema ( mín. 10 caràcters)');
-        return;
-    }
-    if (!ubic) {
-        alert('Selecciona una ubicació al mapa');
+    // Validar descripción mínima
+    if (descripcion.length < 10) {
+        alert("Describe el problema con al menos 10 caracteres");
         return;
     }
     
-    const fecha = new Date().toLocaleString('es-MX');
+    if (!ubicacion) {
+        alert("Selecciona una ubicación en el mapa");
+        return;
+    }
     
-    const save = (img) => {
-        let r = { id: Date.now(), descripcion: desc, ubicacion: ubic, fecha: fecha, imagen: img };
-        let datos = JSON.parse(localStorage.getItem('reportes')) || [];
-        datos.unshift(r);
-        localStorage.setItem('reportes', JSON.stringify(datos));
-        
-        // Reset
-        document.getElementById('descripcion').value = '';
-        document.getElementById('ubicacion').value = '';
-        document.getElementById('ubicacion-texto').textContent = '';
-        document.getElementById('imagen').value = '';
-        document.getElementById('label-text').textContent = '📷 Añadir foto';
-        if (marker) { map.removeLayer(marker); marker = null; }
-        
-        mostrarReportes();
+    let ahora = new Date();
+    let fechaHora = ahora.toLocaleString('es-MX', { 
+        day: '2-digit', month: '2-digit', year: 'numeric', 
+        hour: '2-digit', minute: '2-digit' 
+    });
+
+    const procesarReporte = (imgData) => {
+        let reporte = {
+            id: Date.now(),
+            descripcion,
+            ubicacion,
+            fecha: fechaHora,
+            imagen: imgData,
+            votosUtil: 0,
+            votosFalso: 0,
+            votantes: {}
+        };
+        guardarReporte(reporte);
     };
-    
+
     if (archivo) {
         let reader = new FileReader();
-        reader.onload = e => save(e.target.result);
+        reader.onload = (e) => procesarReporte(e.target.result);
         reader.readAsDataURL(archivo);
     } else {
-        save(null);
+        procesarReporte(null);
     }
+}
+
+// ======== GUARDAR REPORTE ========
+function guardarReporte(reporte) {
+    let datos = JSON.parse(localStorage.getItem("reportes")) || [];
+    datos.unshift(reporte);
+    localStorage.setItem("reportes", JSON.stringify(datos));
+    
+    document.getElementById("descripcion").value = "";
+    document.getElementById("ubicacion").value = "";
+    document.getElementById("imagen").value = "";
+    document.getElementById('label-text').innerText = "Añadir foto";
+    document.getElementById('ubicacion-texto').innerText = "";
+
+    mostrarReportes();
+}
+
+// ======== ELIMINAR REPORTE ========
+function eliminarReporte(id) {
+    if(confirm("¿Seguro que quieres borrar este reporte?")) {
+        let datos = JSON.parse(localStorage.getItem("reportes")) || [];
+        datos = datos.filter(r => r.id !== id);
+        localStorage.setItem("reportes", JSON.stringify(datos));
+        mostrarReportes();
+    }
+}
+
+// ======== VOTAR REPORTE ========
+function votarReporte(id, tipo) {
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    if (!usuario) {
+        alert("Debes iniciar sesión para votar");
+        return;
+    }
+    
+    let datos = JSON.parse(localStorage.getItem("reportes")) || [];
+    const reporte = datos.find(r => r.id === id);
+    
+    if (!reporte) return;
+    
+    if (!reporte.votantes) reporte.votantes = {};
+    
+    if (reporte.votantes[usuario.email]) {
+        alert("Ya has votado este reporte");
+        return;
+    }
+    
+    if (tipo === 'util') {
+        reporte.votosUtil = (reporte.votosUtil || 0) + 1;
+    } else {
+        reporte.votosFalso = (reporte.votosFalso || 0) + 1;
+    }
+    
+    reporte.votantes[usuario.email] = tipo;
+    
+    // Ocultar si tiene 5+ votos falso
+    if (reporte.votosFalso >= 5) {
+        reporte.oculto = true;
+    }
+    
+    localStorage.setItem("reportes", JSON.stringify(datos));
+    mostrarReportes();
 }
 
 // ======== MOSTRAR REPORTES ========
 function mostrarReportes() {
-    const lista = document.getElementById('listaReportes');
-    lista.innerHTML = '';
-    let datos = JSON.parse(localStorage.getItem('reportes')) || [];
+    let lista = document.getElementById("listaReportes");
+    lista.innerHTML = "";
+    let datos = JSON.parse(localStorage.getItem("reportes")) || [];
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    const emailUser = usuario ? usuario.email : null;
     
     datos.forEach(r => {
-        let card = document.createElement('div');
+        if (r.oculto) return;
+        
+        const votosUtil = r.votosUtil || 0;
+        const votosFalso = r.votosFalso || 0;
+        const misVotos = r.votantes ? r.votantes[emailUser] : null;
+        
+        let card = document.createElement("div");
         card.className = 'reporte-card';
+        if (votosFalso >= 3) card.classList.add('voto-negativo');
+        
         card.innerHTML = `
             <button class="btn-eliminar" onclick="eliminarReporte(${r.id})">×</button>
             ${r.imagen ? `<img src="${r.imagen}" class="reporte-img">` : ''}
@@ -120,35 +253,97 @@ function mostrarReportes() {
                 <p class="reporte-info-overlay">${r.descripcion}</p>
             </div>
             <div class="reporte-info">
-                <p class="descripcion-texto">${r.descripcion}</p>
+                <p class="descripcion-texto"><strong>${r.descripcion}</strong></p>
                 <p class="txt-ubicacion">📍 ${r.ubicacion}</p>
                 <span class="fecha-txt">${r.fecha}</span>
+            </div>
+            <div class="votos-container">
+                <button class="btn-votar util" onclick="votarReporte(${r.id}, 'util')" ${misVotos === 'util' ? 'disabled' : ''}>
+                    👍 <span class="contador-votos">${votosUtil}</span>
+                </button>
+                <button class="btn-votar falso" onclick="votarReporte(${r.id}, 'falso')" ${misVotos === 'falso' ? 'disabled' : ''}>
+                    👎 <span class="contador-votos">${votosFalso}</span>
+                </button>
             </div>
         `;
         lista.appendChild(card);
     });
 }
 
-// ======== ELIMINAR ========
-function eliminarReporte(id) {
-    if (confirm('Eliminar este reporte?')) {
-        let datos = JSON.parse(localStorage.getItem('reportes')) || [];
-        datos = datos.filter(r => r.id !== id);
-        localStorage.setItem('reportes', JSON.stringify(datos));
-        mostrarReportes();
-    }
-}
-
-// ======== FILTRAR ========
-function filtrarReportes() {
-    const txt = document.getElementById('buscar').value.toLowerCase();
-    document.querySelectorAll('.reporte-card').forEach(card => {
-        const desc = card.querySelector('.descripcion-texto')?.textContent.toLowerCase() || '';
-        card.style.display = (txt && !desc.includes(txt)) ? 'none' : '';
-    });
-}
-
-// ======== TOGGLE MENU ========
+// ======== TOGGLE MENÚ ========
 function toggleMenu() {
-    document.getElementById('headerMenu').classList.toggle('active');
+    document.getElementById("headerMenu").classList.toggle("active");
 }
+
+// ======== INICIAR SESIÓN ========
+function iniciarSesion(e) {
+    e.preventDefault();
+    let email = document.getElementById("email").value;
+    let telefono = document.getElementById("telefono").value;
+    
+    if (!email || !telefono) {
+        alert("Por favor completa todos los campos");
+        return;
+    }
+    
+    let usuario = { email, telefono };
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+    
+    window.location.href = "index.html";
+}
+
+// ======== REGISTRAR USUARIO ========
+function registrarUsuario(e) {
+    e.preventDefault();
+    let nombre = document.getElementById("nombre").value;
+    let nacimiento = document.getElementById("nacimiento").value;
+    let curp = document.getElementById("curp").value;
+    let email = document.getElementById("email").value;
+    let telefono = document.getElementById("telefono").value;
+    
+    if (!nombre || !email || !telefono) {
+        alert("Por favor completa los campos obligatorios");
+        return;
+    }
+    
+    // Guardar voluntario
+    let voluntario = { nombre, nacimiento, curp, email, telefono };
+    localStorage.setItem("voluntario", JSON.stringify(voluntario));
+    
+    // Auto login
+    let usuario = { email, telefono };
+    localStorage.setItem("usuario", JSON.stringify(usuario));
+    
+    alert("¡Te has unido a nuestra causa!");
+    window.location.href = "index.html";
+}
+
+// ======== INICIALIZAR ========
+console.log('UrbeGDL inicializando...');
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM listo, iniciando mapa...');
+    
+    // Force init - Initialize map immediately
+    setTimeout(function() {
+        try {
+            if (!window.mapaInicializado) {
+                console.log('Forzando inicialización del mapa...');
+                iniciarMapa();
+            }
+        } catch(e) {
+            console.error('Error al iniciar mapa:', e);
+        }
+        
+        mostrarReportes();
+    }, 500);
+    
+    // Also try after images load
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            if (!window.mapaInicializado) {
+                console.log('Iniciando mapa en load...');
+                iniciarMapa();
+            }
+        }, 500);
+    });
+});
