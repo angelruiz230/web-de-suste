@@ -16,10 +16,12 @@
     </div>
     
     <div class="header-center">
-        <input type="text" id="buscar" placeholder="🔍 Buscar reportes..." oninput="filtrarReportes()">
+        <input type="text" id="buscar" placeholder="Buscar reportes..." oninput="filtrarReportes()">
     </div>
     
-    <div class="header-right">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    
+    <div class="header-right" id="headerMenu">
         <a href="login.html" class="btn-login">Iniciar Sesión</a>
         <a href="unete.html" class="btn-register">Únete</a>
     </div>

@@ -32,6 +32,42 @@ header h1 { font-size: 1.4rem; color: #e60023; font-weight: 800; }
 .header-center input:focus { border-color: #e60023; background: white; outline: none; }
 
 .header-right { display: flex; gap: 10px; }
+.menu-toggle {
+    display: none;
+    background: #f0f0f0;
+    border: none;
+    font-size: 1.2rem;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+    
+    .header-right {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        flex-direction: column;
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        gap: 8px;
+    }
+    
+    .header-right.active {
+        display: flex;
+    }
+    
+    .btn-login, .btn-register {
+        text-align: center;
+    }
+}
 .btn-login { background: #e60023; color: white; padding: 10px 20px; border-radius: 24px; text-decoration: none; font-weight: 600; font-size: 14px; }
 .btn-register { background: #f0f0f0; color: #333; padding: 10px 20px; border-radius: 24px; text-decoration: none; font-weight: 600; font-size: 14px; }
 .btn-login:hover { background: #ad081b; }
@@ -166,12 +202,155 @@ header h1 { font-size: 1.4rem; color: #e60023; font-weight: 800; }
 .reporte-card:hover .btn-eliminar { opacity: 1; }
 .btn-eliminar:hover { background: #e60023; }
 
-/* Mobile */
-@media (max-width: 900px) {
-    .container { flex-direction: column; }
-    .sidebar { width: 100%; }
-    .header-center { display: none; }
-    header { padding: 12px 16px; }
-    header h1 { font-size: 1.2rem; }
-    .logo { width: 36px; height: 36px; }
+/* Mobile / Responsive */
+@media (max-width: 768px) {
+    /* Header responsive */
+    header {
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .header-left {
+        flex: 1;
+        min-width: auto;
+    }
+    
+    .header-left h1 {
+        font-size: 1.1rem;
+    }
+    
+    .logo {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+    }
+    
+    .header-center {
+        display: none !important;
+    }
+    
+    .header-right {
+        display: flex;
+        gap: 6px;
+    }
+    
+    .btn-login, .btn-register {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    /* Container full width */
+    .container {
+        flex-direction: column;
+        padding: 12px;
+        gap: 16px;
+    }
+    
+    .sidebar {
+        width: 100%;
+        order: 2;
+    }
+    
+    .reports-section {
+        order: 1;
+        width: 100%;
+    }
+    
+    /* Info box mobile */
+    .info-box, .form-box {
+        padding: 14px;
+        border-radius: 16px;
+    }
+    
+    .info-box h2, .form-box h2 {
+        font-size: 1rem;
+    }
+    
+    /* Form mobile */
+    #mapa {
+        height: 160px;
+    }
+    
+    /* Reports grid - 2 columns on tablet, 1 on mobile */
+    .grid-reportes {
+        column-count: 2;
+        column-gap: 10px;
+    }
+    
+    .reports-section h2 {
+        font-size: 1rem;
+    }
+    
+    /* Cards */
+    .reporte-card {
+        margin-bottom: 10px;
+        border-radius: 12px;
+    }
+    
+    .reporte-info {
+        padding: 10px;
+    }
+    
+    .descripcion-texto {
+        font-size: 0.85rem;
+    }
+    
+    .txt-ubicacion {
+        font-size: 0.75rem;
+    }
+    
+    /* Show delete button on mobile by default */
+    .btn-eliminar {
+        opacity: 0.7;
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 8px 10px;
+    }
+    
+    .header-left h1 {
+        font-size: 1rem;
+    }
+    
+    .logo {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    .grid-reportes {
+        column-count: 1;
+    }
+    
+    .info-box h3 {
+        font-size: 0.9rem;
+        margin-top: 12px;
+    }
+    
+    .info-box p, .form-box label {
+        font-size: 0.85rem;
+    }
+    
+    .form-box input[type="text"] {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .btn-submit {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+    
+    #mapa {
+        height: 150px;
+    }
 }
