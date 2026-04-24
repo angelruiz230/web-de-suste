@@ -1,158 +1,154 @@
+// Variables globals
+let map, marker;
+
+// ======== INIT MAP ========
+window.onload = function() {
+    console.log('Init map...');
+    initMap();
+    mostrarReportes();
+};
+
+function initMap() {
+    // Check Leaflet
+    if (typeof L === 'undefined') {
+        console.error('Leaflet no carregat!');
+        return;
+    }
+    
+    const mapDiv = document.getElementById('mapa');
+    if (!mapDiv) return;
+    
+    // Create map - Guadalajara
+    map = L.map('mapa', {
+        center: [20.6736, -103.3438],
+        zoom: 13,
+        zoomControl: true
+    });
+    
+    // Add tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 18
+    }).addTo(map);
+    
+    console.log('Mapa ready!');
+    
+    // Click handler
+    map.on('click', function(e) {
+        if (marker) marker.setLatLng(e.latlng);
+        else marker = L.marker(e.latlng).addTo(map);
+        
+        // Get address
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
+            .then(res => res.json())
+            .then(data => {
+                const addr = data.display_name || `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+                document.getElementById('ubicacion').value = addr;
+                document.getElementById('ubicacion-texto').textContent = addr;
+            })
+            .catch(() => {
+                const c = `${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
+                document.getElementById('ubicacion').value = c;
+                document.getElementById('ubicacion-texto').textContent = c;
+            });
+    });
+}
+
+// ======== ACTUALIZAR NOMBRE ARCHIVO ========
 function actualizarNombreArchivo() {
     const input = document.getElementById('imagen');
     const label = document.getElementById('label-text');
-    if (input.files.length > 0) label.innerText = "Foto cargada";
+    if (input.files[0]) label.textContent = "✓ Foto carregada";
 }
 
-// Inicializar mapa - Guadalajara como centro por defecto
-const defaultLat = 20.6736;
-const defaultLng = -103.3438;
-
-const map = L.map('mapa').setView([defaultLat, defaultLng], 13);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
-
-let marker = null;
-let ubicacionCoords = null;
-
-map.on('click', function(e) {
-    ubicacionCoords = e.latlng;
-    
-    if (marker) {
-        marker.setLatLng(e.latlng);
-    } else {
-        marker = L.marker(e.latlng).addTo(map);
-    }
-    
-    // Obtener dirección usando reverse geocoding
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
-        .then(response => response.json())
-        .then(data => {
-            const direccion = data.display_name || `Coords: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
-            document.getElementById('ubicacion').value = direccion;
-            document.getElementById('ubicacion-texto').innerText = direccion;
-        })
-        .catch(() => {
-            document.getElementById('ubicacion').value = `Coords: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
-            document.getElementById('ubicacion-texto').innerText = `Coords: ${e.latlng.lat.toFixed(5)}, ${e.latlng.lng.toFixed(5)}`;
-        });
-});
-
+// ======== AGREGAR REPORTE ========
 function agregarReporte() {
-    let descripcion = document.getElementById("descripcion").value;
-    let ubicacion = document.getElementById("ubicacion").value;
-    let archivo = document.getElementById("imagen").files[0];
+    const desc = document.getElementById('descripcion').value.trim();
+    const ubic = document.getElementById('ubicacion').value;
+    const archivo = document.getElementById('imagen').files[0];
     
-    let ahora = new Date();
-    let fechaHora = ahora.toLocaleString('es-MX', { 
-        day: '2-digit', month: '2-digit', year: 'numeric', 
-        hour: '2-digit', minute: '2-digit' 
-    });
-
-    if (!descripcion) {
-        alert("Describe el problema.");
+    if (desc.length < 10) {
+        alert('Descriu el problema ( mín. 10 caràcters)');
         return;
     }
-
-    if (!ubicacion) {
-        alert("Selecciona una ubicación en el mapa.");
+    if (!ubic) {
+        alert('Selecciona una ubicació al mapa');
         return;
     }
-
-    const procesarReporte = (imgData) => {
-        let reporte = {
-            id: Date.now(),
-            descripcion,
-            ubicacion,
-            fecha: fechaHora,
-            imagen: imgData
-        };
-        guardarReporte(reporte);
+    
+    const fecha = new Date().toLocaleString('es-MX');
+    
+    const save = (img) => {
+        let r = { id: Date.now(), descripcion: desc, ubicacion: ubic, fecha: fecha, imagen: img };
+        let datos = JSON.parse(localStorage.getItem('reportes')) || [];
+        datos.unshift(r);
+        localStorage.setItem('reportes', JSON.stringify(datos));
+        
+        // Reset
+        document.getElementById('descripcion').value = '';
+        document.getElementById('ubicacion').value = '';
+        document.getElementById('ubicacion-texto').textContent = '';
+        document.getElementById('imagen').value = '';
+        document.getElementById('label-text').textContent = '📷 Añadir foto';
+        if (marker) { map.removeLayer(marker); marker = null; }
+        
+        mostrarReportes();
     };
-
+    
     if (archivo) {
         let reader = new FileReader();
-        reader.onload = (e) => procesarReporte(e.target.result);
+        reader.onload = e => save(e.target.result);
         reader.readAsDataURL(archivo);
     } else {
-        procesarReporte(null);
+        save(null);
     }
 }
 
-function guardarReporte(reporte) {
-    let datos = JSON.parse(localStorage.getItem("reportes")) || [];
-    datos.unshift(reporte);
-    localStorage.setItem("reportes", JSON.stringify(datos));
-    
-    document.getElementById("descripcion").value = "";
-    document.getElementById("ubicacion").value = "";
-    document.getElementById("imagen").value = "";
-    document.getElementById('label-text').innerText = "Añadir foto";
-
-    mostrarReportes();
-}
-
-function eliminarReporte(id) {
-    if(confirm("¿Seguro que quieres borrar este reporte?")) {
-        let datos = JSON.parse(localStorage.getItem("reportes")) || [];
-        datos = datos.filter(r => r.id !== id);
-        localStorage.setItem("reportes", JSON.stringify(datos));
-        mostrarReportes();
-    }
-}
-
+// ======== MOSTRAR REPORTES ========
 function mostrarReportes() {
-    let lista = document.getElementById("listaReportes");
-    lista.innerHTML = "";
-    let datos = JSON.parse(localStorage.getItem("reportes")) || [];
-
+    const lista = document.getElementById('listaReportes');
+    lista.innerHTML = '';
+    let datos = JSON.parse(localStorage.getItem('reportes')) || [];
+    
     datos.forEach(r => {
-        let card = document.createElement("div");
-        card.className = "reporte-card";
-
+        let card = document.createElement('div');
+        card.className = 'reporte-card';
         card.innerHTML = `
             <button class="btn-eliminar" onclick="eliminarReporte(${r.id})">×</button>
+            ${r.imagen ? `<img src="${r.imagen}" class="reporte-img">` : ''}
+            <div class="reporte-overlay">
+                <p class="reporte-info-overlay">${r.descripcion}</p>
+            </div>
             <div class="reporte-info">
-                <p><strong>${r.descripcion}</strong></p>
-                <p class="txt-ubicacion">${r.ubicacion}</p>
+                <p class="descripcion-texto">${r.descripcion}</p>
+                <p class="txt-ubicacion">📍 ${r.ubicacion}</p>
                 <span class="fecha-txt">${r.fecha}</span>
             </div>
-            ${r.imagen ? `<img src="${r.imagen}" class="reporte-img">` : ''}
         `;
         lista.appendChild(card);
     });
 }
 
+// ======== ELIMINAR ========
+function eliminarReporte(id) {
+    if (confirm('Eliminar este reporte?')) {
+        let datos = JSON.parse(localStorage.getItem('reportes')) || [];
+        datos = datos.filter(r => r.id !== id);
+        localStorage.setItem('reportes', JSON.stringify(datos));
+        mostrarReportes();
+    }
+}
+
+// ======== FILTRAR ========
+function filtrarReportes() {
+    const txt = document.getElementById('buscar').value.toLowerCase();
+    document.querySelectorAll('.reporte-card').forEach(card => {
+        const desc = card.querySelector('.descripcion-texto')?.textContent.toLowerCase() || '';
+        card.style.display = (txt && !desc.includes(txt)) ? 'none' : '';
+    });
+}
+
+// ======== TOGGLE MENU ========
 function toggleMenu() {
-    document.getElementById("headerMenu").classList.toggle("active");
+    document.getElementById('headerMenu').classList.toggle('active');
 }
-
-function iniciarSesion(e) {
-    e.preventDefault();
-    let email = document.getElementById("email").value;
-    let telefono = document.getElementById("telefono").value;
-    
-    let usuario = { email, telefono };
-    localStorage.setItem("usuario", JSON.stringify(usuario));
-    
-    window.location.href = "index.html";
-}
-
-function registrarUsuario(e) {
-    e.preventDefault();
-    let nombre = document.getElementById("nombre").value;
-    let nacimiento = document.getElementById("nacimiento").value;
-    let curp = document.getElementById("curp").value;
-    let email = document.getElementById("email").value;
-    let telefono = document.getElementById("telefono").value;
-    
-    let voluntario = { nombre, nacimiento, curp, email, telefono };
-    localStorage.setItem("voluntario", JSON.stringify(voluntario));
-    
-    alert("¡Te has unido a nuestra causa!");
-    window.location.href = "index.html";
-}
-
-mostrarReportes();
